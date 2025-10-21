@@ -16,27 +16,18 @@ export default async function Page() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold mb-6">Sanity + Next.js demo</h1>
-      <ul className="space-y-6">
+      <h1>Sanity + Next.js demo</h1>
+      <ul>
         {posts.map((post: Post, index: number) => {
           return (
-            <li
-              key={index}
-              className="p-4 border rounded-lg bg-white shadow-sm"
-            >
-              <h2 className="text-xl font-semibold">{post.title}</h2>
-              <div className="mt-1 text-sm text-gray-600">
+            <li key={index}>
+              <h2>{post.title}</h2>
+              <div>
                 {post.designer && <span>Designer: {post.designer}</span>}
                 {post.designer && post.year && <span> • </span>}
                 {post.year && <span>Year: {post.year}</span>}
               </div>
-              {post.imageUrl && (
-                <img
-                  src={post.imageUrl}
-                  alt={post.title}
-                  className="w-full max-w-md mt-2 rounded"
-                />
-              )}
+              {post.imageUrl && <img src={post.imageUrl} alt={post.title} />}
             </li>
           );
         })}

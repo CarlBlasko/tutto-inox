@@ -1,0 +1,36 @@
+// app/globals.scss
+
+// Simple variables (optional)
+$primary-color: #222;
+$background-color: #f5f5f5;
+
+// Basic reset
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background-color: $background-color;
+  color: $primary-color;
+  line-height: 1.6;
+}
+
+main {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+h1,
+h2,
+h3 {
+  margin-bottom: 0.5rem;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 8px;
+}
