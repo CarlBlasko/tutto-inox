@@ -1,0 +1,14 @@
+{
+  "builds": [
+    { "src": "next.config.mjs", "use": "@vercel/next" },
+    {
+      "src": "sanity/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "sanity/dist" }
+    }
+  ],
+  "routes": [
+    { "src": "/studio/(.*)", "dest": "/sanity/dist/$1" },
+    { "src": "/(.*)", "dest": "/" }
+  ]
+}
