@@ -1,6 +1,6 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
-import { deskTool } from "sanity/desk";
+import { media } from "sanity-plugin-media";
 import { visionTool } from "@sanity/vision";
 import { schema } from "./sanity/schema";
 
@@ -9,7 +9,7 @@ export default defineConfig({
   title: "My Sanity Site",
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: "production",
-  plugins: [structureTool(), deskTool(), visionTool()],
+  plugins: [structureTool(), media(), visionTool()],
   schema,
   basePath: "/studio",
 });
