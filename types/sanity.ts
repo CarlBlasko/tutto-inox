@@ -2,7 +2,7 @@
 export interface Post {
   _id: string;
   _type: "post";
-  title: string;
+  title?: string;
   designer?: string;
   year?: number;
   image?: {

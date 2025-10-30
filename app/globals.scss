@@ -1,10 +1,15 @@
 // app/globals.scss
+$basePaddingY: 30px;
+$basePaddingX: 20px;
+$basePadding: $basePaddingY $basePaddingX;
 
-// Simple variables (optional)
-$primary-color: #222;
-$background-color: #f5f5f5;
+:root {
+  --font-primary: system-ui, sans-serif;
+}
 
-// Basic reset
+$primary-color: #010101;
+$background-color: #fff;
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -12,16 +17,52 @@ $background-color: #f5f5f5;
 }
 
 body {
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-primary);
   background-color: $background-color;
   color: $primary-color;
-  line-height: 1.6;
+  letter-spacing: -0.02em;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22.1379px;
+  line-height: 90%;
+  padding: $basePadding;
+  min-height: 100vh;
+  display: flex;
 }
 
 main {
-  max-width: 720px;
-  margin: 2rem auto;
-  padding: 1rem;
+  position: relative;
+  flex: 1;
+
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding-block: 0;
+  padding-inline: 0;
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  background: transparent;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
+
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
 }
 
 h1,
@@ -32,5 +73,79 @@ h3 {
 
 img {
   max-width: 100%;
-  border-radius: 8px;
+}
+
+.box {
+  position: fixed;
+  left: $basePaddingX;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+
+.box--buttons {
+  top: $basePaddingY;
+  gap: 8px;
+  max-width: 46px;
+}
+
+.box--logo {
+  bottom: $basePaddingY;
+  flex-wrap: wrap;
+  
+  &__logo-wrapper {
+    gap: 5px;
+    margin-left: 5px;
+    display: flex;
+    flex-wrap: nowrap;
+
+   > span {
+    width: 100%;
+   }
+  }
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  transition: all 0.25s cubic-bezier(0.33, 1, 0.68, 1); // snappy & clean
+
+  // zoomed-in modifier
+  &.zoomed {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+
+    &.zoomed {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+
+    &.zoomed {
+      grid-template-columns: 1fr; // stays single column
+    }
+  }
+}
+
+.image-item {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.33, 1, 0.68, 1),
+    box-shadow 0.2s ease;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+  }
 }
