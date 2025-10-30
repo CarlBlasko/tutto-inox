@@ -7,8 +7,14 @@
       "config": { "distDir": "sanity/dist" }
     }
   ],
-  "routes": [
-    { "src": "/studio/(.*)", "dest": "/sanity/dist/$1" },
-    { "src": "/(.*)", "dest": "/" }
+  "rewrites": [
+    {
+      "source": "/studio/:path*",
+      "destination": "/studio"
+    },
+    {
+      "source": "/(?!images|fonts|_next|favicon\\.ico).*",
+      "destination": "/"
+    }
   ]
 }
