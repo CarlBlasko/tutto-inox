@@ -13,7 +13,7 @@
       "destination": "/studio"
     },
     {
-      "source": "/(?!images|fonts|_next|favicon\\.ico).*",
+      "source": "/((?!images|fonts|_next|favicon\\.ico).*)",
       "destination": "/"
     }
   ]
