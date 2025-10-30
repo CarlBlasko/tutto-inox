@@ -13,8 +13,8 @@ export default async function Page() {
   return (
     <>
       <div className="box box--buttons">
-        <img src="/plus.svg" alt="Plus" width={46} height={43} />
-        <img src="/minus.svg" alt="Minus" width={46} height={43} />
+        <img src="/images/plus.svg" alt="Plus" width={46} height={43} />
+        <img src="/images/minus.svg" alt="Minus" width={46} height={43} />
       </div>
       <ImagePosts />
 
@@ -22,7 +22,7 @@ export default async function Page() {
         <div>Find someone who looks at you </div>
         <div className="logo-box__logo-wrapper">
           <img
-            src="/logo.svg"
+            src="/images/logo.svg"
             alt="Tutto Inox logo"
             width={61}
             height={35}

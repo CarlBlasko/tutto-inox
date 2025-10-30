@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import "./globals.scss";
 
 const universFont = localFont({
-  src: "../public/fonts/univers-lt-std-57-condensed.otf",
+  src: "./fonts/univers-lt-std-57-condensed.otf",
   variable: "--font-primary", // optional CSS variable
   weight: "400", // or omit if not defined in the OTF
   style: "normal",
