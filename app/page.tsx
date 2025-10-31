@@ -40,61 +40,9 @@ export default async function Page() {
 }
 
 const ImagePosts = async () => {
-  // const posts = (await client.fetch(
-  //   `*[_type == "post"]{title, designer, year, "imageUrl": image.asset->url}`
-  // )) as Post[];
-  const posts = [
-    {
-      id: 1,
-      title: "Kitchen Renovation Tips",
-      imageUrl: "https://picsum.photos/800/600?random=1",
-    },
-    {
-      id: 2,
-      title: "Modern Stainless Design",
-      imageUrl: "https://picsum.photos/1200/500?random=2",
-    },
-    {
-      id: 3,
-      title: "Outdoor Cooking Setup",
-      imageUrl: "https://picsum.photos/640/480?random=3",
-    },
-    {
-      id: 4,
-      title: "Minimal Interior Inspiration",
-      imageUrl: "https://picsum.photos/400/700?random=4",
-    },
-    {
-      id: 5,
-      title: "Industrial Style Fixtures",
-      imageUrl: "https://picsum.photos/900/900?random=5",
-    },
-    {
-      id: 6,
-      title: "Custom Metal Work Showcase",
-      imageUrl: "https://picsum.photos/1600/800?random=6",
-    },
-    {
-      id: 7,
-      title: "Small Space Kitchen Ideas",
-      imageUrl: "https://picsum.photos/500/400?random=7",
-    },
-    {
-      id: 8,
-      title: "Sleek Bathroom Designs",
-      imageUrl: "https://picsum.photos/1080/720?random=8",
-    },
-    {
-      id: 9,
-      title: "Luxury Countertops",
-      imageUrl: "https://picsum.photos/1280/960?random=9",
-    },
-    {
-      id: 10,
-      title: "Contemporary Home Exteriors",
-      imageUrl: "https://picsum.photos/600/400?random=10",
-    },
-  ];
+  const posts = (await client.fetch(
+    `*[_type == "post"]{title, designer, year, "imageUrl": image.asset->url}`
+  )) as Post[];
 
   return (
     <ul className="image-grid">

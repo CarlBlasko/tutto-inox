@@ -1,2 +1,3 @@
-import post from "./schemaTypes/post";
-export const schema = { types: [post] };
+import gallery from "./schemaTypes/gallery";
+
+export const schema = { types: [gallery] };
