@@ -72,7 +72,7 @@ export default function JustifiedCustom({
         // build row container
         const row = document.createElement("div");
         row.className = "jc-row";
-        row.style.gap = `${gap}px`;
+        // row.style.gap = `${gap}px`;
 
         rowImgs.forEach((img, i) => {
           const item = document.createElement("div");

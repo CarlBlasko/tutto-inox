@@ -179,7 +179,7 @@ img {
 .gallery {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+
 }
 
 .gallery-row {
@@ -204,7 +204,13 @@ img {
   flex-direction: row;
   align-items: flex-end; // bottom align visuals
   justify-content: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  
+  gap: 14px;
+  
+  @media (max-width: 600px) {
+    gap: 10px;
+  }
 }
 
 .jc-item {
@@ -216,6 +222,5 @@ img {
 /* reset default img spacing */
 .jc-item img {
   display: block;
-  border-radius: 6px;
   /* no transitions as requested */
 }
