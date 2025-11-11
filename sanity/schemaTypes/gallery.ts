@@ -15,7 +15,10 @@ export default {
       of: [
         {
           type: "image",
-          options: { hotspot: true },
+          options: {
+            hotspot: true,
+            source: "sanity.media",
+          },
         },
       ],
       options: {

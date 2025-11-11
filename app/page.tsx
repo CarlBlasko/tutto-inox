@@ -1,5 +1,6 @@
 import { createClient } from "@sanity/client";
-import { Post } from "../types/sanity";
+import { galleryQuery } from "./lib/queries";
+import JustifiedCustom from "./components/justified-custom";
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
@@ -20,7 +21,7 @@ export default async function Page() {
 
       <div className="box box--logo">
         <div>Find someone who looks at you </div>
-        <div className="logo-box__logo-wrapper">
+        <div className="box__logo-wrapper">
           <img
             src="/images/logo.svg"
             alt="Tutto Inox logo"
@@ -40,26 +41,8 @@ export default async function Page() {
 }
 
 const ImagePosts = async () => {
-  const posts = (await client.fetch(
-    `*[_type == "post"]{title, designer, year, "imageUrl": image.asset->url}`
-  )) as Post[];
+  const data = await client.fetch(galleryQuery);
+  const images = data?.images || [];
 
-  return (
-    <ul className="image-grid">
-      {posts.map((post: any, index: number) => {
-        // {posts.map((post: Post, index: number) => {
-        const { imageUrl, title } = post;
-
-        if (!imageUrl) {
-          return null;
-        }
-
-        return (
-          <li key={index} className="image-item">
-            <img src={post.imageUrl} alt={post.title ?? "image"} />
-          </li>
-        );
-      })}
-    </ul>
-  );
+  return <JustifiedCustom images={images} />;
 };
