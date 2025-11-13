@@ -1,107 +1,141 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-// import "./justified-custom.scss";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useKeyboard } from "../hooks/use-keyboard";
 
 type Img = {
   _id: string;
   url: string;
-  width: number; // intrinsic width from Sanity
-  height: number; // intrinsic height from Sanity
+  width: number;
+  height: number;
 };
 
-export default function JustifiedCustom({
+type LayoutImg = Img & { displayWidth: number; displayHeight: number };
+
+export default function JustifiedGallery({
   images,
-  perRow = 3,
-  gap = 12,
-  desiredHeightMultiplier = 1.0, // tweak: >1 makes tall images proportionally taller
+  desiredHeightMultiplier = 1.0,
 }: {
   images: Img[];
-  perRow?: number;
-  gap?: number;
   desiredHeightMultiplier?: number;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [layout, setLayout] = useState<LayoutImg[]>([]);
+  const [perRow, setPerRow] = useState(3);
 
-  // recompute layout on mount + resize
+  const handleIncrease = useCallback(
+    () => setPerRow((p) => Math.max(p - 1, 1)),
+    []
+  );
+  const handleDecrease = useCallback(() => setPerRow((p) => p + 1), []);
+
+  useKeyboard({ key: "+", handleKeyboardShortcut: handleIncrease });
+  useKeyboard({ key: "-", handleKeyboardShortcut: handleDecrease });
+
+  const gap = 12;
+
+  const computeLayout = (containerWidth: number) => {
+    const rows: Img[][] = [];
+    for (let i = 0; i < images.length; i += perRow) {
+      rows.push(images.slice(i, i + perRow));
+    }
+
+    const layout: LayoutImg[] = [];
+
+    rows.forEach((rowImgs) => {
+      const desiredHeights = rowImgs.map(
+        (img) => img.height * desiredHeightMultiplier
+      );
+      const ratios = rowImgs.map((img) => img.width / img.height);
+      const desiredWidths = desiredHeights.map((h, i) => h * ratios[i]);
+
+      const totalDesiredWidth = desiredWidths.reduce((s, w) => s + w, 0);
+      const totalGap = gap * (rowImgs.length - 1);
+      const availableWidth = Math.max(containerWidth - totalGap, 1);
+
+      // scale so row fills availableWidth
+      const scale =
+        totalDesiredWidth > 0 ? availableWidth / totalDesiredWidth : 1;
+
+      const finalHeights = desiredHeights.map((h) => h * scale);
+      const finalWidths = finalHeights.map((h, i) => h * ratios[i]);
+
+      rowImgs.forEach((img, i) => {
+        layout.push({
+          ...img,
+          displayWidth: finalWidths[i],
+          displayHeight: finalHeights[i],
+        });
+      });
+    });
+
+    return layout;
+  };
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+
     const compute = () => {
       const containerWidth = el.clientWidth;
-      const rows: Img[][] = [];
-      for (let i = 0; i < images.length; i += perRow) {
-        rows.push(images.slice(i, i + perRow));
-      }
-
-      // Clear previous content
-      el.innerHTML = "";
-
-      rows.forEach((rowImgs, rowIndex) => {
-        // desiredHeight_i ~ intrinsicHeight_i (so tall images want to be taller)
-        const desiredHeights = rowImgs.map((img) => {
-          const ratio = img.width / img.height;
-          // Baseline: ratio=1 -> normal height
-          // For very tall images (ratio<1), reduce height influence
-          const normalized = Math.pow(ratio, 0.4); // 0.4 = gentle curve; tweak if needed
-          return img.height * normalized * desiredHeightMultiplier;
-        });
-
-        // const desiredHeights = rowImgs.map(
-        //   (img) => img.height * desiredHeightMultiplier
-        // );
-        // aspect ratios w/h
-        const ratios = rowImgs.map((img) => img.width / img.height);
-
-        // Compute width contribution for each if we used desiredHeights:
-        // width_i_desired = desiredHeight_i * ratio_i
-        const desiredWidths = desiredHeights.map((h, i) => h * ratios[i]);
-
-        // compute scale so that sum(width_i_desired * scale) + gaps = containerWidth
-        const totalDesiredWidth = desiredWidths.reduce((s, w) => s + w, 0);
-        const totalGap = gap * (rowImgs.length - 1);
-        const availableWidth = Math.max(containerWidth - totalGap, 1);
-
-        // scale factor:
-        const scale =
-          totalDesiredWidth > 0 ? availableWidth / totalDesiredWidth : 1;
-
-        // final heights and widths
-        const finalHeights = desiredHeights.map((h) => h * scale);
-        const finalWidths = finalHeights.map((h, i) => h * ratios[i]);
-
-        // build row container
-        const row = document.createElement("div");
-        row.className = "jc-row";
-        // row.style.gap = `${gap}px`;
-
-        rowImgs.forEach((img, i) => {
-          const item = document.createElement("div");
-          item.className = "jc-item";
-
-          // set explicit width/height on img element (prevents layout jumps)
-          const imgel = document.createElement("img");
-          imgel.src = img.url;
-          imgel.alt = "";
-          imgel.width = Math.round(finalWidths[i]);
-          imgel.height = Math.round(finalHeights[i]);
-          imgel.style.display = "block";
-          imgel.style.width = `${finalWidths[i]}px`; // enforce pixel size
-          imgel.style.height = `${finalHeights[i]}px`;
-          imgel.style.objectFit = "cover"; // or contain if you prefer no crop
-          // NOTE: use cover for "full cell" look; change to contain to show entire image with possible background
-          item.appendChild(imgel);
-          row.appendChild(item);
-        });
-
-        el.appendChild(row);
-      });
+      const nextLayout = computeLayout(containerWidth);
+      setLayout(nextLayout);
     };
 
     compute();
     const ro = new ResizeObserver(compute);
     ro.observe(el);
+
     return () => ro.disconnect();
   }, [images, perRow, gap, desiredHeightMultiplier]);
 
-  return <div className="jc-container" ref={containerRef} />;
+  return (
+    <>
+      <div className="box box--buttons">
+        <button type="button" disabled={perRow < 2}>
+          <img
+            src="/images/plus.svg"
+            alt="Plus"
+            width={46}
+            height={43}
+            onClick={() => setPerRow(perRow - 1)}
+          />
+        </button>
+        <button type="button" disabled={perRow === images.length}>
+          <img
+            src="/images/minus.svg"
+            alt="Minus"
+            width={46}
+            height={43}
+            onClick={() => setPerRow(perRow + 1)}
+          />
+        </button>
+      </div>
+      <div
+        className="jc-container"
+        ref={containerRef}
+        style={{
+          gap: `${gap}px`,
+        }}
+      >
+        <AnimatePresence mode="popLayout">
+          {layout.map((img) => (
+            <motion.img
+              key={img.url}
+              src={img.url}
+              layout
+              transition={{ type: "spring", stiffness: 1000, damping: 100 }}
+              style={{
+                width: `${img.displayWidth}px`,
+                height: `${img.displayHeight}px`,
+                objectFit: "cover",
+                display: "block",
+              }}
+              alt=""
+            />
+          ))}
+        </AnimatePresence>
+      </div>
+    </>
+  );
 }

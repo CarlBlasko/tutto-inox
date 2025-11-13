@@ -1,6 +1,7 @@
 import { createClient } from "@sanity/client";
 import { galleryQuery } from "./lib/queries";
 import JustifiedCustom from "./components/justified-custom";
+// import { useState } from "react";
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
@@ -11,13 +12,12 @@ const client = createClient({
 });
 
 export default async function Page() {
+  const data = await client.fetch(galleryQuery);
+  const images = data?.images || [];
+
   return (
     <>
-      <div className="box box--buttons">
-        <img src="/images/plus.svg" alt="Plus" width={46} height={43} />
-        <img src="/images/minus.svg" alt="Minus" width={46} height={43} />
-      </div>
-      <ImagePosts />
+      <JustifiedCustom images={images} />
 
       <div className="box box--logo">
         <div>Find someone who looks at you </div>
@@ -39,10 +39,3 @@ export default async function Page() {
     </>
   );
 }
-
-const ImagePosts = async () => {
-  const data = await client.fetch(galleryQuery);
-  const images = data?.images || [];
-
-  return <JustifiedCustom images={images} />;
-};
